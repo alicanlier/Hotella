@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.vision.hotel.model.HotelReserveDao">
+
+<!-- public int insert(RentReserve vo) throws SQLException; -->
+<insert id="insert" parameterType="org.vision.hotel.model.HotelReserve">
+	insert into HOTEL_RESERVE 
+	(REGNO,NO,QTY,DDAY,RDAY,MEMID)
+	values(HOTEL_RESERVE_SEQ.NEXTVAL,#{no},#{qty},#{dday},#{rday},#{memid}) 
+</insert>
+
+<!-- public int getCurrval() throws SQLException ; -->
+<!-- SELECT RENT_RESERVE_SEQ.CURRVAL FROM DUAL  -->	
+<select id="getCurrval" resultType="int">
+	select max(REGNO) FROM HOTEL_RESERVE
+</select>
+
+<select id="selectAll" resultType="org.vision.hotel.model.HotelReserve">
+	select * from HOTEL_RESERVE 
+	order by REGNO asc
+</select>
+
+<!-- public List<RentReserve> queryForList(String memid) throws SQLException; -->
+<select id="queryForList" resultType="org.vision.hotel.model.HotelReserve">
+	select * from HOTEL_RESERVE 
+	where MEMID=#{param1} order by rday desc
+</select>
+
+<!-- public List<ReserveView> getReserveViewData(String memid) throws SQLException;
+ -->
+<select id="getReserveViewData" resultType="org.vision.hotel.model.RESERVE_VIEW">
+	select * from RESERVE_VIEW
+	where MEMID = #{param1} order by rday desc
+</select>
+
+<select id="getAllReserveViewData" resultType="org.vision.hotel.model.RESERVE_VIEW">
+	select * from RESERVE_VIEW order by rday desc
+</select>
+
+
+
+<!-- public int reserveCancel(int regno) throws SQLException; -->
+<delete id="reserveCancel">
+	delete HOTEL_RESERVE 
+	where REGNO = #{param1}
+</delete> 
+
+<!-- public RentReserve queryForObject(int regno) throws SQLException; -->	
+<select id="queryForObject" resultType="org.vision.hotel.model.HotelReserve">
+	select * from HOTEL_RESERVE
+	where REGNO = #{param1}
+</select>
+<!-- public int update(RentReserve bean) throws SQLException; -->
+<update id="update" parameterType="org.vision.hotel.model.HotelReserve">
+	update HOTEL_RESERVE set
+	NO=#{no},QTY=#{qty},DDAY=#{dday},RDAY=#{rday},MEMID=#{memid} 
+	where REGNO=#{regno}
+</update>
+
+</mapper>

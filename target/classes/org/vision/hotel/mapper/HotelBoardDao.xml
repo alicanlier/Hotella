@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.vision.hotel.model.HotelBoardDao">
+	<resultMap type="org.vision.hotel.model.HotelBoard" id="result">
+		<id column="NUM" property="num" />
+		<result column="WRITER" property="writer" />
+		<result column="SUBJECT" property="subject" />
+		<result column="REG_DATE" property="reg_date" javaType="java.sql.Date" />
+		<result column="REF" property="ref" javaType="Integer" />
+		<result column="RE_STEP" property="re_step" />
+		<result column="RE_LEVEL" property="re_level" />
+		<result column="HIT" property="readcount" />
+		<result column="CONTENT" property="content" />
+	</resultMap>
+
+	<insert id="insert"
+		parameterType="org.vision.hotel.model.HotelBoard">
+		INSERT INTO T_BOARD
+		(NUM,WRITER,SUBJECT,REG_DATE,REF,RE_STEP,RE_LEVEL,CONTENT)
+		VALUES(T_BOARD_NUM_SEQ.NEXTVAL,#{writer},#{subject},SYSDATE,T_BOARD_NUM_SEQ.CURRVAL,0,0,#{content})
+	</insert>
+
+	<insert id="insert2" parameterType="org.vision.hotel.model.HotelBoard">
+		INSERT INTO T_BOARD
+		(NUM,WRITER,SUBJECT,REG_DATE,REF,RE_STEP,RE_LEVEL,CONTENT)
+		VALUES(T_BOARD_NUM_SEQ.NEXTVAL,#{writer},#{subject},SYSDATE,#{ref},
+		#{re_step}+1,#{re_level}+1,#{content})
+	</insert>
+
+	<select id="selectAll" resultMap="result">
+		<!--SELECT NUM,WRITER,SUBJECT,REG_DATE,REF,RE_STEP,RE_LEVEL,READCOUNT,CONTENT
+		FROM T_BOARD ORDER BY REF DESC, RE_STEP ASC-->
+		<!-- SELECT NUM,WRITER,SUBJECT,REG_DATE,REF,RE_STEP,RE_LEVEL,CONTENT,T_COMMENTHITLIKE.HIT
+		FROM T_BOARD,T_COMMENTHITLIKE WHERE T_BOARD.NUM = T_COMMENTHITLIKE.NUM
+		ORDER BY REF DESC, RE_STEP ASC-->
+		SELECT T_BOARD.NUM,WRITER,SUBJECT,REG_DATE,REF,RE_STEP,RE_LEVEL,CONTENT,HIT
+		FROM T_BOARD LEFT JOIN T_COMMENTHITLIKE
+		ON T_BOARD.NUM = T_COMMENTHITLIKE.NUM
+		ORDER BY REF DESC, RE_STEP ASC
+	</select>
+
+	<select id="select" parameterType="int" resultMap="result">
+		<!-- SELECT NUM,WRITER,SUBJECT,REG_DATE,REF,RE_STEP,RE_LEVEL,READCOUNT,CONTENT
+		FROM T_BOARD WHERE NUM = #{param1} -->
+		SELECT T_BOARD.NUM,WRITER,SUBJECT,REG_DATE,REF,RE_STEP,RE_LEVEL,CONTENT,HIT
+		FROM T_BOARD LEFT JOIN T_COMMENTHITLIKE
+		ON T_BOARD.NUM=T_COMMENTHITLIKE.NUM WHERE T_BOARD.NUM = #{param1}
+	</select>
+
+	<update id="upHit" parameterType="int">
+		UPDATE T_COMMENTHITLIKE SET HIT
+		= HIT + 1 WHERE NUM = #{param1}
+	</update>
+
+	<update id="update"
+		parameterType="org.vision.hotel.model.HotelBoard">
+		UPDATE T_BOARD SET WRITER = #{writer},
+		SUBJECT = #{subject},
+		CONTENT =#{content}
+		WHERE NUM = #{num}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		DELETE FROM T_BOARD WHERE NUM = #{param1}
+	</delete>
+
+	<select id="getAllCount" resultType="Integer">
+		SELECT COUNT(*) FROM T_BOARD
+	</select>
+</mapper>

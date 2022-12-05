@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.vision.hotel.model.HotelDao">
+<!-- public int isExist(Integer key) throws SQLException;//★ -->
+<select id="isExist" parameterType="int">
+	SELECT * FROM HOTEL WHERE NO=#{param1}
+</select>
+
+<!-- public int insert(Rentcar vo) throws SQLException;//★ -->
+<insert id="insert" parameterType="org.vision.hotel.model.Hotel">
+	INSERT INTO HOTEL (NO,NAME,CATEGORY,PRICE,USEPEOPLE,ADDRESS,PHONE,IMG) 
+	VALUES(HOTEL_SEQ.NEXTVAL,#{name},#{category},#{price},#{usepeople},#{address},#{phone},#{img})
+</insert>
+
+<!-- public int delete(Integer key) throws SQLException;//★ -->
+
+<delete id="delete" parameterType="int">
+	DELETE FROM HOTEL WHERE NO = #{param1}
+</delete>
+
+<!-- public int update(Map<String,Object> map) 
+				throws SQLException;//★ -->
+<update id = "update" parameterType="java.util.Map">
+	UPDATE HOTEL SET 
+	NAME= #{name},CATEGORY= #{category}, 
+	PRICE = #{price}, USEPEOPLE= #{usepeople},
+	ADDRESS = #{address}, PHONE = #{phone}, IMG = #{img}
+	WEHRE NO = #{no}
+</update>
+
+<!-- public List<Rentcar> queryForList() throws SQLException;//★ -->
+<select id="selectAll" resultType="org.vision.hotel.model.Hotel">
+	SELECT * FROM HOTEL 
+</select>
+
+<select id = "listByCategory" resultType="org.vision.hotel.model.Hotel">
+	SELECT * FROM HOTEL 
+	WHERE CATEGORY = #{param1}
+</select>
+
+
+
+<!-- public List<Rentcar> queryForList(Integer key) throws SQLException;
+		// key에 해당하는 하나의 자료를 vo로 리턴  -->
+		
+<select id="selectKey" parameterType="int" 
+	resultType="org.vision.hotel.model.Hotel">
+	SELECT * FROM HOTEL 
+	WHERE NO = #{param1}
+</select>
+
+<!-- // key에 해당하는 하나의 자료를 vo로 리턴 
+		public Hotel selectVO(Integer key) throws SQLException;//★ -->
+<select id="selectVO" parameterType="int" 
+	resultType="org.vision.hotel.model.Hotel">
+	SELECT * FROM HOTEL 
+	WHERE NO = #{param1}
+</select>
+
+<!-- // 현재 자료수 파악 
+		public int getAllCount() throws SQLException;//★ -->
+<select id="getAllCount" resultType="int">
+	SELECT COUNT(*) FROM HOTEL 
+</select>
+<!-- 
+// 시리얼번호 자동증가 값중 현재 기록된 최대값을 알아내기 
+		public int getMaxNo()  throws SQLException;//★
+ -->
+<select id="getMaxNo" resultType="int">
+	SELECT MAX(NO) FROM HOTEL 
+</select>
+
+<!-- public int getCurrval() throws SQLException; -->
+<select id="getCurrval" resultType="int">
+	SELECT HOTEL_SEQ.CURRVAL FROM DUAL
+</select>
+
+<!-- // 로그인판단
+		public int login(Map<String,String> map) throws SQLException; -->
+
+<select id="login" parameterType="java.util.Map" resultType="int">
+	select count(*) from HOTEL_MEMBER 
+	WHERE ID= #{id} AND PASS=#{pass}
+</select>
+
+
+</mapper>
